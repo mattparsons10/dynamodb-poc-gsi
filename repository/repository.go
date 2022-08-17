@@ -7,8 +7,8 @@ import (
 	"fmt"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
+	"github.com/aws/aws-sdk-go-v2/feature/dynamodb/attributevalue"
 	"github.com/aws/aws-sdk-go-v2/service/dynamodb"
-	"github.com/aws/aws-sdk-go/service/dynamodb/dynamodbattribute"
 )
 
 type Repository struct {
@@ -27,7 +27,7 @@ func NewRepository(dc dynamoclient.DynamoDBInterface) Repository {
 }
 
 func (r Repository) SaveBudgetItem(item dataobjects.Budget) {
-	av, err := dynamodbattribute.ConvertToMap(item)
+	av, err := attributevalue.MarshalMap(item)
 	if err != nil {
 		fmt.Println("Error mapping item")
 	}

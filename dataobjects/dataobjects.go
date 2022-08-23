@@ -7,6 +7,12 @@ type Budget struct {
 	BudgetItems     []BudgetItem `json:"budgetItems"`
 }
 
+type SingleBudget struct {
+	AccountID       int          `json:"accountID"`
+	CreatedDateTime int64        `json:"createdDateTime"`
+	BudgetItems     []BudgetItem `json:"budgetItems"`
+}
+
 type BudgetItem struct {
 	ID                         string `json:"ID"`
 	CreatedDateTime            int64  `json:"createdDateTime"`
@@ -26,4 +32,18 @@ type BudgetItem struct {
 	PaymentStartMonth          int    `json:"paymentStartMonth"`
 	NumberOfMonthlyPayments    int    `json:"numberOfMonthlyPayments"`
 	SUNNumber                  int    `json:"sunNumber"`
+}
+
+type RollOnItem struct {
+	RollOnDate string `json:"rollOnDate"`
+	AccountID  int    `json:"accountID"`
+}
+
+type RollOnAccResponse struct {
+	RollOnDate string `json:"rollOnDate"`
+	Accounts   []Account
+}
+
+type Account struct {
+	AccountID int
 }

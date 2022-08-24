@@ -71,6 +71,8 @@ func (h Handler) GetBudget(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		fmt.Println("Error marshalling budget items", err)
 	}
+
+	fmt.Println("retrieved ", len(budget), " different budget records")
 	w.Write(resp)
 }
 

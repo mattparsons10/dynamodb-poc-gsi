@@ -57,11 +57,11 @@ func (r Repository) SaveRollOnDate(date string, accountID int) {
 	var accs []dataobjects.Account
 	accs = append(accs, account)
 
-	//var emptyList []dataobjects.Account
+	var emptyList []dataobjects.Account
 
 	mappedAccs := updateItemMapper(accs)
 
-	//emptyMap := updateItemMapper(emptyList)
+	emptyMap := updateItemMapper(emptyList)
 
 	input := &dynamodb.UpdateItemInput{
 		TableName: aws.String("poc-budgeting-rollon"),
@@ -73,9 +73,9 @@ func (r Repository) SaveRollOnDate(date string, accountID int) {
 		},
 		ExpressionAttributeValues: map[string]types.AttributeValue{
 			":accs": &types.AttributeValueMemberL{Value: mappedAccs},
-			//":el":   &types.AttributeValueMemberL{Value: emptyMap},
+			":el":   &types.AttributeValueMemberL{Value: emptyMap},
 		},
-		UpdateExpression: aws.String("SET #accs = list_append(#accs, :accs)"),
+		UpdateExpression: aws.String("SET #accs = list_append(if_not_exists(#accs, :el), :accs)"),
 	}
 	_, err := r.DynamoClient.UpdateItem(context.Background(), input)
 
@@ -272,11 +272,13 @@ func (r Repository) UpdateBudgetingInTransaction(budget dataobjects.SingleBudget
 			},
 		},
 	}
-	_, err = r.DynamoClient.TransactWriteItems(context.Background(), twii)
+	dynoResp, err := r.DynamoClient.TransactWriteItems(context.Background(), twii)
 	if err != nil {
 		fmt.Println("Error putting item", err)
 		return err
 	}
+	fmt.Println(dynoResp.ResultMetadata)
+
 	return
 }
 
